@@ -12,7 +12,9 @@ class EventsChannel < ApplicationCable::Channel
     ConnectionManager.deregister_callback broadcast_to_current_connection_proc
   end
 
-  def request_count
+  # ~send
+  def request_count(data)
+    logger.info("XXXXXXXx data: " + data.to_s + "; data['a']: " + data['a'].to_s)
     broadcast
   end
 

@@ -17,36 +17,43 @@ else
   'ws'
 
 App.cable = ActionCable.createConsumer("#{protocol}:#{location.host}/cable")
+#                    -> createConsumer('ws://localhost:3000/cable')
 
-channel = App.cable.subscriptions.create "EventsChannel",
+events = App.cable.subscriptions.create "EventsChannel",
+  # ws.onOpen
   connected: ->
     $('.connecting').hide()
     $('.connected').show()
 
+  # ws.onClose
   disconnected: ->
     $('.connecting').show().text('Oops, cable gone away, trying to reconnect')
     $('.connected').hide()
 
+  # ws.onMessage
   received: (data) ->
+    #$('.debug').text(JSON.stringify(data, null, 4))
     $('#connected-count').text(data.count)
     message = "<li>Connection request for #{data.count} took " +
               "#{Math.round(new Date().getTime() - data.broadcastAt)} ms"
     $('ul#requests').prepend(message)
 
   requestCount: (data) ->
-    @perform("request_count")
+    $('.debug').text("XXX" + JSON.stringify(data, null, 4))
+    @perform("request_count", data)
 
   streamLiveCount: (data) ->
     @perform("stream_live_count")
 
-notifications = App.cable.subscriptions.create "NotificationsChannel",
+notifs = App.cable.subscriptions.create "NotificationsChannel",
   received: (data) ->
     $('ul#requests').prepend("<li>Notification: #{data}</li>")
 
 $(document).ready(->
   $('button#request-current-count').on 'click', ->
-    channel.requestCount()
+    d = {a: 12, b: 34}
+    events.requestCount(d)
   $('button#live-current-count').on 'click', ->
-    channel.streamLiveCount()
+    events.streamLiveCount()
     $('#live-current-count').hide()
 )
