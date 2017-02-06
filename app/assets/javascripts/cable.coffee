@@ -1,7 +1,9 @@
 # Action Cable provides the framework to deal with WebSockets in Rails.
-# You can generate new channels where WebSocket features live using the rails generate channel command.
+# You can generate new channels where WebSocket features live
+# using the rails generate channel command.
 #
-# Turn on the cable connection by removing the comments after the require statements (and ensure it's also on in config/routes.rb).
+# Turn on the cable connection by removing the comments
+# after the require statements (and ensure it's also on in config/routes.rb).
 #
 #= require action_cable
 #= require_self
@@ -27,7 +29,9 @@ channel = App.cable.subscriptions.create "EventsChannel",
 
   received: (data) ->
     $('#connected-count').text(data.count)
-    $('ul#requests').append("<li>Connection request for #{data.count} took #{Math.round(new Date().getTime() - data.broadcastAt)} ms")
+    message = "<li>Connection request for #{data.count} took " +
+              "#{Math.round(new Date().getTime() - data.broadcastAt)} ms"
+    $('ul#requests').prepend(message)
 
   requestCount: (data) ->
     @perform("request_count")
@@ -37,7 +41,7 @@ channel = App.cable.subscriptions.create "EventsChannel",
 
 notifications = App.cable.subscriptions.create "NotificationsChannel",
   received: (data) ->
-    $('ul#requests').append("<li>Notification: #{data}</li>")
+    $('ul#requests').prepend("<li>Notification: #{data}</li>")
 
 $(document).ready(->
   $('button#request-current-count').on 'click', ->
